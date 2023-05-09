@@ -85,7 +85,7 @@ public class StudentCreator {
 
     private Student createStudent(UserContext userContext, UserDto userDto) throws IOException {
         return Student.builder()
-                .id(userDto.getId())
+                .userId(userDto.getId())
                 .personId(userDto.getPersonId())
                 .groupId(userContext.getGroupId())
                 .schoolId(userContext.getSchoolId())

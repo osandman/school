@@ -1,11 +1,15 @@
 package net.osandman.school;
 
+import net.osandman.school.dao.EntityDao;
 import net.osandman.school.dao.StudentDao;
-import net.osandman.school.dao.StudentDaoPostgres;
+import net.osandman.school.dao.StudentInfoDao;
 import net.osandman.school.dto.*;
 import net.osandman.school.entity.Student;
+import net.osandman.school.entity.StudentInfo;
+import net.osandman.school.model.SchoolContext;
 import net.osandman.school.model.StudentAvgMark;
 import net.osandman.school.entity.Subject;
+import net.osandman.school.model.StudentCreator;
 import net.osandman.school.service.*;
 import net.osandman.school.util.Print;
 import net.osandman.school.util.PropertiesProcess;
@@ -25,33 +29,37 @@ public class Main {
     static List<Student> studentsFromDb = new ArrayList<>();
 
     //    static String dateFrom = "2023-02-27"; //3-й триместр
-    static String dateFrom = "2022-10-10"; //максимальный период
-    static String dateTo = "2023-05-05";
+    static String dateFrom = "2023-02-27"; //максимальный период
+    static String dateTo = "2023-05-09";
 
     public static void main(String[] args) throws IOException, InterruptedException {
         try (SessionFactory sessionFactory = SessionManager.getSessionFactory()) {
 
-            StudentDao studentDao = new StudentDaoPostgres(sessionFactory);
+            EntityDao<Student> studentDao = new StudentDao(sessionFactory);
+            EntityDao<StudentInfo> studentInfoDao = new StudentInfoDao(sessionFactory);
 
-//            SchoolContext schoolContext = new SchoolContext("src/main/private/init.properties");
-//
-//            StudentCreator creator = StudentCreator.builder()
-//                    .setContext(schoolContext)
-//                    .createStudents()
-//                    .build();
-//
+            SchoolContext schoolContext = new SchoolContext("src/main/private/init.properties");
+
+            StudentCreator creator = StudentCreator.builder()
+                    .setContext(schoolContext)
+                    .createStudents()
+                    .build();
+
+            studentDao.addOrUpdateStudents(creator.getStudents().toArray(new Student[0]));
+            studentInfoDao.addOrUpdateStudents(creator.getStudentsInfo().toArray(new StudentInfo[0]));
+
 //            Print.printList(creator.getStudents());
 //            Print.printList(creator.getStudentsInfo());
 
-            System.out.println(studentDao.getStudentById(2000001095440L));
-            printAvgMarks(studentDao, "");
+//            System.out.println(studentDao.getStudentById(2000001095440L));
+//            printAvgMarks(studentDao, "технол");
         }
     }
 
-    private static void printAvgMarks(StudentDao studentDao, String subjectContains) throws IOException {
+    private static void printAvgMarks(EntityDao<Student> entityDao, String subjectContains) throws IOException {
         Map<String, String> init = PropertiesProcess.getTokens("src/main/private/tokens.properties");
         for (Map.Entry<String, String> entry : init.entrySet()) {
-            Student currentStudent = studentDao.getStudentById(Long.parseLong(entry.getKey()));
+            Student currentStudent = entityDao.getStudentById(Long.parseLong(entry.getKey()));
             Map<String, String> headers = Map.of("Access-Token", entry.getValue());
 
             String getAllSubjects = PropertiesProcess.getUrl("subjects",
@@ -62,7 +70,7 @@ public class Main {
             String getSubjectMarks = PropertiesProcess.getUrl("weightedAverageMarks",
                     currentStudent.getGroupId(), dateFrom, dateTo);
             subjectMarks.addAll(ApiRequest.getSubjectMark(getSubjectMarks, headers));
-            studentsFromDb.addAll(studentDao.getStudentsListByGroupId(currentStudent.getGroupId()));
+            studentsFromDb.addAll(entityDao.getStudentsListByGroupId(currentStudent.getGroupId()));
         }
 
         studentsFromDb.sort(Comparator.comparing(Student::getLastName));

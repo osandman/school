@@ -1,9 +1,6 @@
 package net.osandman.school.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +13,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "student")
 public class Student {
-    private long id;
+    @Column(name = "user_id")
+    private long userId;
     @Id
     @Column(name = "person_id")
     private long personId;
@@ -33,4 +31,7 @@ public class Student {
     @Column(name = "sex")
     private String sex;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "person_id")
+    private StudentInfo studentInfo;
 }

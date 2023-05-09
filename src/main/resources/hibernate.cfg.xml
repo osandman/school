@@ -16,5 +16,6 @@
         <!--        <property name="hibernate.hbm2ddl.auto">update</property>-->
 
         <mapping class="net.osandman.school.entity.Student"/>
+        <mapping class="net.osandman.school.entity.StudentInfo"/>
     </session-factory>
 </hibernate-configuration>
