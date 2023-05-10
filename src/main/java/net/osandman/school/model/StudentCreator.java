@@ -17,7 +17,6 @@ public class StudentCreator {
     private SchoolContext schoolContext;
     private List<Student> students;
     private List<StudentInfo> studentsInfo;
-    private List<Person> persons;
     private Map<String, List<Person>> personsMap;
 
     private StudentCreator() {
@@ -51,6 +50,7 @@ public class StudentCreator {
         public StudentCreator build() {
             return newStudentCreator;
         }
+
     }
 
     public List<Student> getStudents() {
@@ -110,7 +110,7 @@ public class StudentCreator {
     private void sendRequestsAndGetPersons() {
         for (UserContext userContext : schoolContext.getUserContexts()) {
             try {
-                persons = ApiRequest.getDataList(
+                List<Person> persons = ApiRequest.getDataList(
                         PropertiesProcess.getUrl("personsV2",
                                 userContext.getGroupId()),
                         Person.class,

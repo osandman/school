@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Data
 public class SchoolContext {
     private final Map<String, UserContextDto> userContextDtos = new HashMap<>();
     private final List<UserContext> userContexts = new ArrayList<>();
@@ -26,7 +25,15 @@ public class SchoolContext {
         return userContexts;
     }
 
-    public void createUserContexts() {
+    public List<Map<String, String>> getTokenHeaders() {
+        List<Map<String, String>> headers = new ArrayList<>();
+        for (UserContext context : userContexts) {
+            headers.add(Map.of("Access-Token", context.getToken()));
+        }
+        return headers;
+    }
+
+    private void createUserContexts() {
         fillDtoUserContexts();
         for (Map.Entry<String, UserContextDto> dto : userContextDtos.entrySet()) {
             userContexts.add(UserContext.builder()
@@ -40,6 +47,7 @@ public class SchoolContext {
         }
     }
 
+
     private void fillDtoUserContexts() {
         try {
             String contextUrl = PropertiesProcess.getUrl("schoolContext");
@@ -48,11 +56,12 @@ public class SchoolContext {
                 UserContextDto userContextDto = ApiRequest.getData(contextUrl,
                         UserContextDto.class,
                         Map.of("Access-Token", entry.getValue()));
-                System.out.println(userContextDto);
+//                System.out.println(userContextDto);
                 userContextDtos.put(entry.getValue(), userContextDto);
             }
         } catch (IOException e) {
             throw new RuntimeException();
         }
     }
+
 }

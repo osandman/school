@@ -10,10 +10,10 @@ import net.osandman.school.model.SchoolContext;
 import net.osandman.school.model.StudentAvgMark;
 import net.osandman.school.entity.Subject;
 import net.osandman.school.model.StudentCreator;
+import net.osandman.school.model.TeacherCreator;
 import net.osandman.school.service.*;
-import net.osandman.school.util.Print;
-import net.osandman.school.util.PropertiesProcess;
-import net.osandman.school.util.SessionManager;
+import net.osandman.school.util.*;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.hibernate.SessionFactory;
 
 import java.io.IOException;
@@ -34,25 +34,26 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         try (SessionFactory sessionFactory = SessionManager.getSessionFactory()) {
-
             EntityDao<Student> studentDao = new StudentDao(sessionFactory);
             EntityDao<StudentInfo> studentInfoDao = new StudentInfoDao(sessionFactory);
 
             SchoolContext schoolContext = new SchoolContext("src/main/private/init.properties");
 
-            StudentCreator creator = StudentCreator.builder()
-                    .setContext(schoolContext)
-                    .createStudents()
-                    .build();
+//            StudentCreator creator = StudentCreator.builder()
+//                    .setContext(schoolContext)
+//                    .createStudents()
+//                    .build();
 
-            studentDao.addOrUpdateStudents(creator.getStudents().toArray(new Student[0]));
-            studentInfoDao.addOrUpdateStudents(creator.getStudentsInfo().toArray(new StudentInfo[0]));
+//            studentDao.addOrUpdateStudents(creator.getStudents().toArray(new Student[0]));
+//            studentInfoDao.addOrUpdateStudents(creator.getStudentsInfo().toArray(new StudentInfo[0]));
 
 //            Print.printList(creator.getStudents());
 //            Print.printList(creator.getStudentsInfo());
 
 //            System.out.println(studentDao.getStudentById(2000001095440L));
-//            printAvgMarks(studentDao, "технол");
+//            printAvgMarks(studentDao, "информ");
+
+                Print.printList(new TeacherCreator(schoolContext).getTeacherDtos());
         }
     }
 

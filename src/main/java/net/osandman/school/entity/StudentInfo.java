@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "student_info")
 public class StudentInfo {
     @Id
     @Column(name = "person_id")
@@ -28,6 +29,6 @@ public class StudentInfo {
     @Column(name = "photo_url")
     private String photoUrl;
 
-    @OneToOne(mappedBy = "studentInfo", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "studentInfo")
     private Student student;
 }

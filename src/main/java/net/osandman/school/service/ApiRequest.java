@@ -26,7 +26,6 @@ public class ApiRequest {
     }
 
     private static String getEntityString(String url, Map<String, String> headers) {
-        HttpProcess httpProcess = new HttpProcess();
-        return httpProcess.getEntityFromGetRequest(url, headers);
+        return HttpProcess.getEntityFromGetRequest(url, headers);
     }
 }
