@@ -1,11 +1,14 @@
 package net.osandman.school.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
 
 @Data
@@ -28,7 +31,4 @@ public class StudentInfo {
     private String email;
     @Column(name = "photo_url")
     private String photoUrl;
-
-    @OneToOne(mappedBy = "studentInfo")
-    private Student student;
 }

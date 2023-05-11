@@ -16,7 +16,7 @@ import java.util.Map;
 public class StudentCreator {
     private SchoolContext schoolContext;
     private List<Student> students;
-    private List<StudentInfo> studentsInfo;
+//    private List<StudentInfo> studentsInfo;
     private Map<String, List<Person>> personsMap;
 
     private StudentCreator() {
@@ -33,7 +33,7 @@ public class StudentCreator {
         private Builder() {
             newStudentCreator = new StudentCreator();
             newStudentCreator.students = new ArrayList<>();
-            newStudentCreator.studentsInfo = new ArrayList<>();
+//            newStudentCreator.studentsInfo = new ArrayList<>();
             newStudentCreator.personsMap = new HashMap<>();
         }
 
@@ -57,9 +57,9 @@ public class StudentCreator {
         return students;
     }
 
-    public List<StudentInfo> getStudentsInfo() {
-        return studentsInfo;
-    }
+//    public List<StudentInfo> getStudentsInfo() {
+//        return studentsInfo;
+//    }
 
     private void fillStudentsAndInfo() {
         sendRequestsAndGetPersons();
@@ -75,7 +75,7 @@ public class StudentCreator {
                             .findFirst()
                             .orElseThrow();
                     students.add(createStudent(userContext, userDto));
-                    studentsInfo.add(createStudentInfo(userDto));
+//                    studentsInfo.add(createStudentInfo(userDto));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -93,6 +93,7 @@ public class StudentCreator {
                 .lastName(userDto.getLastName())
                 .middleName(userDto.getMiddleName())
                 .sex(userDto.getSex())
+                .studentInfo(createStudentInfo(userDto))
                 .build();
     }
 

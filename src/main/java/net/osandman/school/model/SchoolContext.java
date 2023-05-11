@@ -36,13 +36,14 @@ public class SchoolContext {
     private void createUserContexts() {
         fillDtoUserContexts();
         for (Map.Entry<String, UserContextDto> dto : userContextDtos.entrySet()) {
+            UserContextDto current = dto.getValue();
             userContexts.add(UserContext.builder()
                     .token(dto.getKey())
-                    .shortName(dto.getValue().getShortName())
-                    .personId(dto.getValue().getPersonId())
-                    .userId(dto.getValue().getUserId())
-                    .groupId(dto.getValue().getGroupIds().get(0))
-                    .schoolId(dto.getValue().getSchoolIds().get(0))
+                    .shortName(current.getShortName())
+                    .personId(current.getPersonId())
+                    .userId(current.getUserId())
+                    .groupId(current.getGroupIds().get(0))
+                    .schoolId(current.getSchoolIds().get(0))
                     .build());
         }
     }

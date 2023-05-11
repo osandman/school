@@ -1,64 +1,55 @@
 package net.osandman.school.dao;
 
 import net.osandman.school.entity.Student;
+import net.osandman.school.entity.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.util.List;
 
-public class StudentDao implements EntityDao<Student> {
+public class TeacherDao implements EntityDao<Teacher> {
     private final SessionFactory sessionFactory;
 
-    public StudentDao(SessionFactory sessionFactory) {
+    public TeacherDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
     @Override
-    public void add(Student... entities) {
+    public void add(Teacher... entities) {
         Session session = sessionFactory.getCurrentSession();
         session.beginTransaction();
-        for (Student student : entities) {
-            session.persist(student);
+        for (Teacher teacher : entities) {
+            session.persist(teacher);
         }
         session.getTransaction().commit();
     }
 
     @Override
-    public Student getById(long personId) {
+    public Teacher getById(long personId) {
         Session session = sessionFactory.getCurrentSession();
         session.beginTransaction();
-        Student student = session.get(Student.class, personId);
+        Teacher teacher = session.get(Teacher.class, personId);
         session.getTransaction().commit();
-        return student;
-    }
-
-    public List<Student> getStudentsListByGroupId(long groupId) {
-        Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        List<Student> students = session.createQuery("from Student " +
-                "where groupId = " + groupId).getResultList();
-        session.getTransaction().commit();
-        return students;
-
+        return teacher;
     }
 
     @Override
     public void removeById(long personId) {
         Session session = sessionFactory.getCurrentSession();
         session.beginTransaction();
-        Student student = session.get(Student.class, personId);
-        if (student != null) {
-            session.remove(student);
+        Teacher teacher = session.get(Teacher.class, personId);
+        if (teacher != null) {
+            session.remove(teacher);
         }
         session.getTransaction().commit();
     }
 
     @Override
-    public void update(Student... entities) {
+    public void update(Teacher... entities) {
         Session session = sessionFactory.getCurrentSession();
         session.beginTransaction();
-        for (Student student : entities) {
-            session.merge(student);
+        for (Teacher teacher : entities) {
+            session.merge(teacher);
         }
         session.getTransaction().commit();
     }

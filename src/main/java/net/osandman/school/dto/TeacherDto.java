@@ -3,9 +3,11 @@ package net.osandman.school.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
 
-@Data
 public class TeacherDto {
     @JsonProperty("Id")
     public long id;

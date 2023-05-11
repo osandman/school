@@ -1,5 +1,7 @@
 package net.osandman.school.util;
 
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -14,7 +16,10 @@ public final class HttpManager {
 
     public static CloseableHttpClient getHttpClient() {
         if (httpClient == null) {
-            httpClient = HttpClients.createDefault();
+            httpClient = HttpClients.custom()
+                    .setDefaultRequestConfig(RequestConfig.custom()
+                            .setCookieSpec(CookieSpecs.STANDARD).build())
+                    .build();
         }
         return httpClient;
     }

@@ -19,7 +19,7 @@ public final class HttpProcess {
         requestGet.addHeader("Content-Type", "application/json");
         requestGet.addHeader("Accept-Charset", "utf-8");
         try (CloseableHttpResponse response = HttpManager.getHttpClient().execute(requestGet)) {
-            System.out.println(response.getStatusLine().toString());
+            System.out.println(response.getStatusLine().toString() + " (" + url + ")");
 //            printHeaders(response);
             return EntityUtils.toString(response.getEntity());
         } catch (IOException e) {

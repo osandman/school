@@ -2,18 +2,17 @@ package net.osandman.school;
 
 import net.osandman.school.dao.EntityDao;
 import net.osandman.school.dao.StudentDao;
-import net.osandman.school.dao.StudentInfoDao;
+import net.osandman.school.dao.TeacherDao;
 import net.osandman.school.dto.*;
 import net.osandman.school.entity.Student;
 import net.osandman.school.entity.StudentInfo;
+import net.osandman.school.entity.Teacher;
 import net.osandman.school.model.SchoolContext;
 import net.osandman.school.model.StudentAvgMark;
 import net.osandman.school.entity.Subject;
-import net.osandman.school.model.StudentCreator;
 import net.osandman.school.model.TeacherCreator;
 import net.osandman.school.service.*;
 import net.osandman.school.util.*;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.hibernate.SessionFactory;
 
 import java.io.IOException;
@@ -33,34 +32,60 @@ public class Main {
     static String dateTo = "2023-05-09";
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        System.out.println(System.getProperty("java.class.path"));
         try (SessionFactory sessionFactory = SessionManager.getSessionFactory()) {
-            EntityDao<Student> studentDao = new StudentDao(sessionFactory);
-            EntityDao<StudentInfo> studentInfoDao = new StudentInfoDao(sessionFactory);
+//            EntityDao<Student> studentDao = new StudentDao(sessionFactory);
+            EntityDao<Teacher> teacherDao = new TeacherDao(sessionFactory);
 
-            SchoolContext schoolContext = new SchoolContext("src/main/private/init.properties");
+            SchemaGenerator.exportCreateQuery(Teacher.class, "create.sql");
+//            SchoolContext schoolContext = new SchoolContext("src/main/private/init.properties");
+
+//            List<Teacher> teachers = new TeacherCreator(schoolContext).getTeachers();
+//            Print.printList(teachers);
+//            teacherDao.add(teachers.toArray(new Teacher[0]));
+
 
 //            StudentCreator creator = StudentCreator.builder()
 //                    .setContext(schoolContext)
 //                    .createStudents()
 //                    .build();
-
-//            studentDao.addOrUpdateStudents(creator.getStudents().toArray(new Student[0]));
-//            studentInfoDao.addOrUpdateStudents(creator.getStudentsInfo().toArray(new StudentInfo[0]));
-
+//
+//            studentDao.addStudents(creator.getStudents().toArray(new Student[0]));
 //            Print.printList(creator.getStudents());
-//            Print.printList(creator.getStudentsInfo());
+
+
+//            testDB(studentDao, studentInfoDao);
+
 
 //            System.out.println(studentDao.getStudentById(2000001095440L));
 //            printAvgMarks(studentDao, "информ");
 
-                Print.printList(new TeacherCreator(schoolContext).getTeacherDtos());
+
+            System.out.println("done!");
         }
     }
 
-    private static void printAvgMarks(EntityDao<Student> entityDao, String subjectContains) throws IOException {
+    private static void testDB(EntityDao<Student> studentDao, EntityDao<StudentInfo> studentInfoDao) {
+        Student student = Student.builder()
+                .personId(8)
+                .studentInfo(StudentInfo.builder()
+                        .shortName("Petya")
+                        .personId(8)
+                        .build())
+                .build();
+
+        studentDao.add(student);
+        studentDao.removeById(6);
+//        studentInfoDao.removeStudentById(1);
+        //            studentInfoDao.removeStudentById(2000001100383L);
+//            studentDao.removeStudentById(2000001100383L);
+
+    }
+
+    private static void printAvgMarks(StudentDao entityDao, String subjectContains) throws IOException {
         Map<String, String> init = PropertiesProcess.getTokens("src/main/private/tokens.properties");
         for (Map.Entry<String, String> entry : init.entrySet()) {
-            Student currentStudent = entityDao.getStudentById(Long.parseLong(entry.getKey()));
+            Student currentStudent = entityDao.getById(Long.parseLong(entry.getKey()));
             Map<String, String> headers = Map.of("Access-Token", entry.getValue());
 
             String getAllSubjects = PropertiesProcess.getUrl("subjects",

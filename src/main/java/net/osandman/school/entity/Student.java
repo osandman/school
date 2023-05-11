@@ -1,10 +1,11 @@
 package net.osandman.school.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -32,6 +33,6 @@ public class Student {
     private String sex;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "person_id")
+    @PrimaryKeyJoinColumn
     private StudentInfo studentInfo;
 }

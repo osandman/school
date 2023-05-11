@@ -1,18 +1,13 @@
 package net.osandman.school.dao;
 
-import net.osandman.school.entity.Student;
+public interface EntityDao<T> {
 
-import java.util.List;
+    void add(T... entities);
 
-public interface EntityDao <T> {
+    T getById(long id);
 
-    void addOrUpdateStudents(T... students);
+    void removeById(long id);
 
-    T getStudentById(long id);
-    List<T> getStudentsListByGroupId(long groupId);
-
-    void removeStudentById(long id);
-
-    void updateStudents(T... students);
+    void update(T... entities);
 
 }

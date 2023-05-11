@@ -12,7 +12,7 @@ public final class SessionManager {
     public static SessionFactory getSessionFactory() {
         try {
             return new Configuration()
-                    .setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy())
+//                    .setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy())
                     .configure("hibernate.cfg.xml")
                     .buildSessionFactory();
         } catch (HibernateException e) {
