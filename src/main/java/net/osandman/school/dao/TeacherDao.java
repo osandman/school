@@ -1,11 +1,9 @@
 package net.osandman.school.dao;
 
-import net.osandman.school.entity.Student;
 import net.osandman.school.entity.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import java.util.List;
 
 public class TeacherDao implements EntityDao<Teacher> {
     private final SessionFactory sessionFactory;

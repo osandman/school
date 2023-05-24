@@ -10,6 +10,7 @@ import net.osandman.school.entity.Teacher;
 import net.osandman.school.model.SchoolContext;
 import net.osandman.school.model.StudentAvgMark;
 import net.osandman.school.entity.Subject;
+import net.osandman.school.model.StudentCreator;
 import net.osandman.school.model.TeacherCreator;
 import net.osandman.school.service.*;
 import net.osandman.school.util.*;
@@ -29,16 +30,16 @@ public class Main {
 
     //    static String dateFrom = "2023-02-27"; //3-й триместр
     static String dateFrom = "2023-02-27"; //максимальный период
-    static String dateTo = "2023-05-09";
+    static String dateTo = "2023-05-24";
 
     public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println(System.getProperty("java.class.path"));
         try (SessionFactory sessionFactory = SessionManager.getSessionFactory()) {
-//            EntityDao<Student> studentDao = new StudentDao(sessionFactory);
+            StudentDao studentDao = new StudentDao(sessionFactory);
             EntityDao<Teacher> teacherDao = new TeacherDao(sessionFactory);
 
-            SchemaGenerator.exportCreateQuery(Teacher.class, "create.sql");
-//            SchoolContext schoolContext = new SchoolContext("src/main/private/init.properties");
+//            SchemaGenerator.exportCreateQuery(Teacher.class, "create.sql");
+            SchoolContext schoolContext = new SchoolContext("src/main/private/init.properties");
 
 //            List<Teacher> teachers = new TeacherCreator(schoolContext).getTeachers();
 //            Print.printList(teachers);
@@ -49,8 +50,8 @@ public class Main {
 //                    .setContext(schoolContext)
 //                    .createStudents()
 //                    .build();
-//
-//            studentDao.addStudents(creator.getStudents().toArray(new Student[0]));
+
+//            studentDao.add(creator.getStudents().toArray(new Student[0]));
 //            Print.printList(creator.getStudents());
 
 
@@ -58,14 +59,14 @@ public class Main {
 
 
 //            System.out.println(studentDao.getStudentById(2000001095440L));
-//            printAvgMarks(studentDao, "информ");
+            printAvgMarks(studentDao, "");
 
 
             System.out.println("done!");
         }
     }
 
-    private static void testDB(EntityDao<Student> studentDao, EntityDao<StudentInfo> studentInfoDao) {
+    private static void testDB(StudentDao studentDao, EntityDao<StudentInfo> studentInfoDao) {
         Student student = Student.builder()
                 .personId(8)
                 .studentInfo(StudentInfo.builder()

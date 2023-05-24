@@ -18,6 +18,7 @@ public class Teacher {
     @Id
     private long id;
     private long userId;
+    private long schoolId;
     private String firstName;
     private String lastName;
     private String middleName;
