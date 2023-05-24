@@ -1,11 +1,9 @@
 package net.osandman.school.model;
 
-import lombok.Data;
 import net.osandman.school.dto.UserContextDto;
 import net.osandman.school.service.ApiRequest;
 import net.osandman.school.util.PropertiesProcess;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,18 +48,14 @@ public class SchoolContext {
 
 
     private void fillDtoUserContexts() {
-        try {
-            String contextUrl = PropertiesProcess.getUrl("schoolContext");
-            Map<String, String> map = PropertiesProcess.getTokens(propertiesFileName);
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                UserContextDto userContextDto = ApiRequest.getData(contextUrl,
-                        UserContextDto.class,
-                        Map.of("Access-Token", entry.getValue()));
+        String contextUrl = PropertiesProcess.getUrl("schoolContext");
+        Map<String, String> map = PropertiesProcess.getTokens(propertiesFileName);
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            UserContextDto userContextDto = ApiRequest.getData(contextUrl,
+                    UserContextDto.class,
+                    Map.of("Access-Token", entry.getValue()));
 //                System.out.println(userContextDto);
-                userContextDtos.put(entry.getValue(), userContextDto);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException();
+            userContextDtos.put(entry.getValue(), userContextDto);
         }
     }
 

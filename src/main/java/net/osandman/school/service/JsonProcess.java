@@ -1,9 +1,10 @@
 package net.osandman.school.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import net.osandman.school.dto.SubjectMark;
+import net.osandman.school.dto.SubjectMarkDto;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -18,33 +19,49 @@ public class JsonProcess {
         objectMapper.registerModule(new JavaTimeModule());
     }
 
-    public static void writeJsonToFile(Path path, String jsonString, boolean append) throws IOException {
+    public static void writeJsonToFile(Path path, String jsonString, boolean append) {
         try (BufferedOutputStream fos = new BufferedOutputStream(new FileOutputStream(path.toFile(), append))) {
             fos.write(jsonString.getBytes(StandardCharsets.UTF_8));
             fos.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public static void writeJsonToFile(Path path, Map<String, Object> jsonMap) throws IOException {
+    public static void writeJsonToFile(Path path, Map<String, Object> jsonMap) {
         try (FileWriter fileWriter = new FileWriter(path.toFile())) {
             fileWriter.write(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonMap));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public static String getPrettyJsonString(String input) throws IOException {
-        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(input);
+    public static String getPrettyJsonString(String input) {
+        try {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(input);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static List<SubjectMark> getMarksFromJson(String jsonString) throws IOException {
-        return getMarksFromJsonNode(objectMapper.readTree(jsonString));
+    public static List<SubjectMarkDto> getMarksFromJson(String jsonString) {
+        try {
+            return getMarksFromJsonNode(objectMapper.readTree(jsonString));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static List<SubjectMark> getMarksFromJson(Path jsonPath) throws IOException {
-        return getMarksFromJsonNode(objectMapper.readTree(jsonPath.toFile()));
+    public static List<SubjectMarkDto> getMarksFromJson(Path jsonPath) {
+        try {
+            return getMarksFromJsonNode(objectMapper.readTree(jsonPath.toFile()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private static List<SubjectMark> getMarksFromJsonNode(JsonNode root) throws IOException {
-        List<SubjectMark> listMarks = new ArrayList<>();
+    private static List<SubjectMarkDto> getMarksFromJsonNode(JsonNode root) {
+        List<SubjectMarkDto> listMarks = new ArrayList<>();
 //        JsonNode root = objectMapper.readTree(new File("src/main/resources/subject_marks.json"));
         JsonNode subj = root.path("subjectMarks");
         for (JsonNode node : subj) {
@@ -56,42 +73,64 @@ public class JsonProcess {
                 double value = mark.get("value").asDouble();
                 mapMarks.put(personId, value);
             }
-            listMarks.add(new SubjectMark(subjId, mapMarks));
+            listMarks.add(new SubjectMarkDto(subjId, mapMarks));
         }
         return listMarks;
     }
 
-    public static <T> T[] getArrayJson(String inputString, Class<T[]> aClass) throws IOException {
-        return objectMapper.readValue(inputString, aClass);
-    }
-
-    public static <T> T getJson(String str, Class<T> clazz) throws IOException {
-        return objectMapper.readValue(str, clazz);
-    }
-
-
-    public static <T> void writeArrayJsonToFile(Path path, List<T> data) throws IOException {
-        FileWriter fileWriter = new FileWriter(path.toFile());
-        SequenceWriter sequenceWriter = objectMapper.writer().writeValuesAsArray(fileWriter);
-        for (T currenData : data) {
-            sequenceWriter.write(currenData);
+    public static <T> T[] getArrayJson(String inputString, Class<T[]> aClass) {
+        try {
+            return objectMapper.readValue(inputString, aClass);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
-        sequenceWriter.close();
     }
 
-    public static <T> List<T> getListFromJson(Path path, Class<T> aClass) throws IOException {
+    public static <T> T getJson(String str, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(str, clazz);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static <T> void writeArrayJsonToFile(Path path, List<T> data) {
+        try (FileWriter fileWriter = new FileWriter(path.toFile());
+             SequenceWriter sequenceWriter = objectMapper.writer().writeValuesAsArray(fileWriter)) {
+            for (T currenData : data) {
+                sequenceWriter.write(currenData);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> List<T> getListFromJson(Path path, Class<T> aClass) {
         JavaType type = objectMapper.getTypeFactory().constructParametricType(List.class, aClass);
-        return objectMapper.readValue(path.toFile(), type);
+        try {
+            return objectMapper.readValue(path.toFile(), type);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static <T> List<T> getListFromJson(String input, Class<T> aClass) throws IOException {
+    public static <T> List<T> getListFromJson(String input, Class<T> aClass) {
         JavaType type = objectMapper.getTypeFactory().constructParametricType(List.class, aClass);
-        return objectMapper.readValue(input, type);
+        try {
+            return objectMapper.readValue(input, type);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static <K, V> Map<K, V> getMapFromJson(String input) throws IOException {
+    public static <K, V> Map<K, V> getMapFromJson(String input) {
         TypeReference<HashMap<K, V>> typeRef = new TypeReference<>() {
         };
-        return objectMapper.readValue(input, typeRef);
+        try {
+            return objectMapper.readValue(input, typeRef);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

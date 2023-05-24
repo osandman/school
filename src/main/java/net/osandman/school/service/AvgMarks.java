@@ -2,7 +2,7 @@ package net.osandman.school.service;
 
 import net.osandman.school.dao.StudentDao;
 import net.osandman.school.entity.Subject;
-import net.osandman.school.dto.SubjectMark;
+import net.osandman.school.dto.SubjectMarkDto;
 import net.osandman.school.entity.Student;
 import net.osandman.school.model.SchoolContext;
 import net.osandman.school.model.StudentAvgMark;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class AvgMarks {
     private static final Set<Subject> subjects = new HashSet<>();
-    private static final List<SubjectMark> subjectMarks = new ArrayList<>();
+    private static final List<SubjectMarkDto> subjectMarks = new ArrayList<>();
     private static final List<Student> studentsFromDb = new ArrayList<>();
 
 
@@ -48,14 +48,14 @@ public class AvgMarks {
     }
 
     public static List<StudentAvgMark> getStudentAvgMarksList(List<Student> students,
-                                                              Set<Subject> subjects, List<SubjectMark> subjectMarks) {
+                                                              Set<Subject> subjects, List<SubjectMarkDto> subjectMarks) {
         List<StudentAvgMark> marksForStudents = new ArrayList<>();
         StudentAvgMark studentAvgMark;
         Map<String, Double> avgMarks;
         for (Student currentStudent : students) {
             avgMarks = new HashMap<>();
             studentAvgMark = new StudentAvgMark(currentStudent, avgMarks);
-            for (SubjectMark subjectsMark : subjectMarks) {
+            for (SubjectMarkDto subjectsMark : subjectMarks) {
                 String subjName = subjects.stream().filter(subj -> subj.getId() == subjectsMark.subjectId())
                         .findAny().orElse(new Subject()).getName();
                 if (subjName == null || subjName.equals("")) {

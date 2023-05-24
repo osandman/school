@@ -15,7 +15,6 @@ public class Subject {
     private int fgosSubjectId;
     private String espSubjectName;
 
-
     public String getName(long id) {
         return this.id == id ? this.name : "unknown subject";
     }

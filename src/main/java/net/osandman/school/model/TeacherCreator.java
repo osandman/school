@@ -1,12 +1,10 @@
 package net.osandman.school.model;
 
 import net.osandman.school.dto.TeacherDto;
-import net.osandman.school.dto.UserDto;
 import net.osandman.school.entity.Teacher;
 import net.osandman.school.service.ApiRequest;
 import net.osandman.school.util.PropertiesProcess;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,19 +13,13 @@ import java.util.Map;
 public class TeacherCreator {
 
     private final SchoolContext schoolContext;
-//    private List<TeacherDto> teacherDtos;
     private List<Teacher> teachers;
     private Map<List<TeacherDto>, Long> teachersSchoolIds;
-
-//    public
-//    List<TeacherDto> teacherDtos = ApiRequest.getDataList("", TeacherDto.class, schoolContext.getTokenHeaders().get(0));
-
 
     public TeacherCreator(SchoolContext schoolContext) {
         this.schoolContext = schoolContext;
         createTeachers();
     }
-
 
     public List<Teacher> getTeachers() {
         return teachers;
@@ -36,7 +28,7 @@ public class TeacherCreator {
     private void createTeachers() {
         fillTeachersAndInfo();
         teachers = new ArrayList<>();
-        for(Map.Entry<List<TeacherDto>, Long> entry : teachersSchoolIds.entrySet()) {
+        for (Map.Entry<List<TeacherDto>, Long> entry : teachersSchoolIds.entrySet()) {
             long schoolId = entry.getValue();
             for (TeacherDto dto : entry.getKey()) {
                 Teacher current = Teacher.builder()
@@ -73,14 +65,11 @@ public class TeacherCreator {
     private void fillTeachersAndInfo() {
         teachersSchoolIds = new HashMap<>();
         for (UserContext context : schoolContext.getUserContexts()) {
-            try {
-                List<TeacherDto> teacherDtos = ApiRequest.getDataList(
-                        PropertiesProcess.getUrl("teachers", context.getSchoolId()),
-                        TeacherDto.class, Map.of("Access-Token", context.getToken()));
-                teachersSchoolIds.put(teacherDtos, context.getSchoolId());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            List<TeacherDto> teacherDtos = ApiRequest.getDataList(
+                    PropertiesProcess.getUrl("teachers", context.getSchoolId()),
+                    TeacherDto.class, Map.of("Access-Token", context.getToken()));
+            teachersSchoolIds.put(teacherDtos, context.getSchoolId());
+
         }
     }
 }
