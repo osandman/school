@@ -3,7 +3,6 @@ package net.osandman.school;
 import net.osandman.school.dao.EntityDao;
 import net.osandman.school.dao.StudentDao;
 import net.osandman.school.dao.TeacherDao;
-import net.osandman.school.dto.TeacherDto;
 import net.osandman.school.dto.UserDto;
 import net.osandman.school.entity.Student;
 import net.osandman.school.entity.StudentInfo;
@@ -16,7 +15,6 @@ import net.osandman.school.util.*;
 import org.hibernate.SessionFactory;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 
@@ -30,7 +28,7 @@ public class Main {
             EntityDao<Teacher> teacherDao = new TeacherDao(sessionFactory);
 
 //            SchemaGenerator.exportCreateQuery(Teacher.class, "create.sql");
-            SchoolContext schoolContext = new SchoolContext("src/main/private/init.properties");
+            SchoolContext schoolContext = new SchoolContext();
 
 //            List<Teacher> teachers = new TeacherCreator(schoolContext).getTeachers();
 //            Print.printList(teachers);
@@ -50,23 +48,20 @@ public class Main {
 
 //            System.out.println(studentDao.getStudentById(2000001095440L));
 
-            //    static String dateFrom = "2023-02-27"; //3-й триместр
-            String dateFrom = "2023-02-27"; //максимальный период
-            String dateTo = "2023-05-24";
-//            AvgMarks.printAvgMarks(studentDao, schoolContext, "", dateFrom, dateTo);
-
-//            test();
+            String dateFrom = "2023-02-27"; //3-й триместр
+            String dateTo = "2023-06-01";
+            AvgMarks.printAvgMarks(studentDao, schoolContext, "", dateFrom, dateTo);
+//            printUserDto();
 
             System.out.println("done!");
         }
     }
 
-    private static void test() {
+    private static void printUserDto() {
         var v = ApiRequest.getData(
                 PropertiesProcess.getUrl("userV1", "1000005891735"),
                 UserDto.class,
-                Map.of("Access-Token", PropertiesProcess
-                        .getTokens("src/main/private/init.properties")
+                Map.of("Access-Token", PropertiesProcess.getTokens()
                         .get("token.nas")));
         System.out.println(v);
     }

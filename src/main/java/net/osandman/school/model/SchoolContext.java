@@ -12,10 +12,8 @@ import java.util.Map;
 public class SchoolContext {
     private final Map<String, UserContextDto> userContextDtos = new HashMap<>();
     private final List<UserContext> userContexts = new ArrayList<>();
-    private final String propertiesFileName;
 
-    public SchoolContext(String propertiesFileName) {
-        this.propertiesFileName = propertiesFileName;
+    public SchoolContext() {
         createUserContexts();
     }
 
@@ -49,7 +47,7 @@ public class SchoolContext {
 
     private void fillDtoUserContexts() {
         String contextUrl = PropertiesProcess.getUrl("schoolContext");
-        Map<String, String> map = PropertiesProcess.getTokens(propertiesFileName);
+        Map<String, String> map = PropertiesProcess.getTokens();
         for (Map.Entry<String, String> entry : map.entrySet()) {
             UserContextDto userContextDto = ApiRequest.getData(contextUrl,
                     UserContextDto.class,
